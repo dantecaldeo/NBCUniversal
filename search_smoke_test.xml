@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="NBCUniversal.Search" verbose="5" >
+
+    <test name="SearchSmokeTest">
+        <classes>
+            <class name="EndPoints.SearchTest"></class>
+        </classes>
+    </test>
+
+</suite>
