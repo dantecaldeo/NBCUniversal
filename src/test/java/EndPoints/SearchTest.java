@@ -1,5 +1,6 @@
 package EndPoints;
 
+import lib.DataProvider.SearchParameterDataProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.testng.Assert;
@@ -10,36 +11,29 @@ public class SearchTest {
 
     String apiRoot = "https://images-api.nasa.gov/search";
 
-    @Test(dataProvider="searchParameters")
+    @Test(dataProvider="searchParameters", dataProviderClass = SearchParameterDataProvider.class)
     public void successResponse(String searchParam, String searchValue){
-        //searchParam = q, center, description,...
-        //searchValue = text
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.getForEntity(apiRoot + "?" + searchParam + "=" + searchValue, String.class);
-        Assert.assertEquals(response.getStatusCode(), HttpStatus.OK);
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.OK );
     }
 
-    @Test(dataProvider="searchParameters")
+   @Test(dataProvider="searchParameters", dataProviderClass = SearchParameterDataProvider.class)
     public void responseIsCollectionAndJson(String searchParam, String searchValue){
-        //searchParam = q, center, description,...
-        //searchValue = text
-
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.getForEntity(apiRoot + "?" + searchParam + "=" + searchValue, String.class);
-        Assert.assertTrue(response.getBody().contains("Collection"));
+        Assert.assertTrue(response.getBody().contains("collection"));
+        Assert.assertTrue(response.getBody().contains(apiRoot + "?" + searchParam + "=" + searchValue ));
 
     }
 
-    @Test(dataProvider="notAllowedSearchParameters")
-    public void notSuccessResponse(String searchParam, String searchValue){
-        //searchParam = q1, center1, description1,...
-        //searchValue = text
-
+    @Test(dataProvider="notAllowedSearchParameters", dataProviderClass = SearchParameterDataProvider.class)
+    public void badRequestResponse(String searchParam, String searchValue){
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.getForEntity(apiRoot + "?" + searchParam + "=" + searchValue, String.class);
-        Assert.assertFalse(response.getStatusCode().equals(HttpStatus.OK));
-    }
+        Assert.assertTrue(response.getStatusCode().equals(HttpStatus.BAD_REQUEST));
 
+    }
 
 }
